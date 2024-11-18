@@ -9,6 +9,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -179,3 +180,22 @@ namespace output {
 	}*/
 
 } // namespace output
+
+
+istream& operator>>(istream& in, vector<int>& vec) {
+
+	string s{};
+	getline(in, s, '\n');
+	//input::clearInputStream();
+	stringstream stream{};
+	stream << s;
+
+	int tmp = 0;
+
+	while (stream >> tmp) {
+		vec.push_back(tmp);
+	}
+	//if (stream.fail()) cout << "fail" << endl;
+
+	return in;
+}
