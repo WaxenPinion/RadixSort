@@ -15,22 +15,22 @@ public:
 		: m_title{ title } {};
 	virtual ~Menu() = default;
 
-	virtual std::shared_ptr<Menu> execute(std::vector<int>& data) = 0;
+	virtual Menu* execute(std::vector<int>& data) = 0;
 
-	Menu& setNext(std::shared_ptr<Menu> next);
+	Menu& setNext(Menu* next);
 
-	static std::shared_ptr<Menu> end();
+	//static Menu* end();
 
 protected:
 
 	std::string m_title{ "" };
-	std::shared_ptr<Menu> m_next{ end() };
+	Menu* m_next{ nullptr };
 
 };
 
 
-using MenuPtr = std::shared_ptr<Menu>;
-using MenuVector = std::vector<std::shared_ptr<Menu>>;
+using MenuPtr = Menu*;
+using MenuVector = std::vector<Menu*>;
 
 
 class OptionMenu : public Menu {
@@ -55,7 +55,11 @@ public:
 
 	virtual MenuPtr execute(std::vector<int>& data) override;
 
-	OptionMenu& addOption(const std::string& name, MenuPtr next, 
+	/// <summary>
+	/// Adds option to the menu.
+	/// Note: sets member m_next of "next" to self.  
+	/// </summary>
+	OptionMenu& addOption(const std::string& name, MenuPtr next = nullptr, 
 		bool(*predicate)(std::vector<int>&) = nullptr);
 	//OptionMenu& setPredicate(bool(*predicate)(std::vector<int>&));
 	//OptionMenu& AddOption(std::string name, )
@@ -150,7 +154,7 @@ public:
 
 private:
 
-	MenuPtr m_next{ Menu::end() };
+	MenuPtr m_next = nullptr;
 	//std::vector<MenuPtr> m_menus{};
 	//bool m_stop = false;
 

@@ -48,6 +48,7 @@ OptionMenu& OptionMenu::addOption(const std::string& name, MenuPtr next,
 	//m_ptrs.push_back(next);
 	//m_conditions.push_back(predicate);
 	m_options.push_back(Option(name, next, predicate));
+	if (next) next->setNext(this);
 	//next->setNext(std::make_shared<OptionMenu>(*this));
 	//if (constant) m_constant.push_back(m_options.size() - 1);
 
@@ -97,7 +98,7 @@ void MenuController::start(MenuPtr first) {
 }*/
 
 
-Menu& Menu::setNext(std::shared_ptr<Menu> next) {
+Menu& Menu::setNext(Menu* next) {
 
 	m_next = next;
 
@@ -105,12 +106,13 @@ Menu& Menu::setNext(std::shared_ptr<Menu> next) {
 }
 
 
-std::shared_ptr<Menu> Menu::end() {
+/*Menu* Menu::end() {
 
-	std::shared_ptr<Menu> ptr{};
-	ptr.reset();
-	return ptr;
-}
+	//std::shared_ptr<Menu> ptr{};
+	//ptr.reset();
+	//return ptr;
+	return nullptr;
+}*/
 
 MenuPtr ClearMenu::execute(std::vector<int>& data) {
 	data.clear();

@@ -64,28 +64,25 @@ int main() {
 	}*/
 
 	MenuController contr{};
-	vector<MenuPtr> menus{};
-	shared_ptr<OptionMenu> main{ make_shared<OptionMenu>("main") };
-	menus.push_back(make_shared<InputMenu>(InputMenu("input")));
-	menus.push_back(make_shared<OutputMenu>(OutputMenu("show")));
-	menus.push_back(make_shared<ClearMenu>(ClearMenu("cleared")));
-	menus.push_back(make_shared<ProcessMenu>(ProcessMenu("cleared").setFunction(RadixSort)));
 
-	main->addOption("input", menus.at(0))
-		.addOption("show", menus.at(1), checkEmpty)
-		.addOption("clear", menus.at(2), checkEmpty)
-		.addOption("sort", menus.at(3), checkEmpty)
-		.addOption("exit", Menu::end());
-		
-		//.setPredicate(checkEmpty);
+	OptionMenu main{ "main" }, input_choice{"input_choice"};
+	InputMenu input{ "input" };
+	OutputMenu output{ "output" };
+	ClearMenu clear{ "cleared" };
+	ProcessMenu proc{ "sort" };
+	proc.setFunction(RadixSort);
 
-	//menus.push_back(main);
-	menus.at(0)->setNext(main);
-	menus.at(1)->setNext(main);
-	menus.at(2)->setNext(main);
-	menus.at(3)->setNext(main);
+	main.addOption("input", &input_choice)
+		.addOption("show", &output, checkEmpty)
+		.addOption("clear", &clear, checkEmpty)
+		.addOption("sort", &proc, checkEmpty)
+		.addOption("exit");
+	input_choice.addOption("manual", &input)
+		.addOption("file", &main) //change
+		.addOption("return", &main);
+	input.setNext(&main);
 
-	contr.start(menus.back());
+	contr.start(&main);
 
 	return EXIT_SUCCESS;
 }
