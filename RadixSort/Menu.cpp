@@ -1,5 +1,6 @@
 #include "Menu.h"
 #include "Consoleio.h"
+#include "Utils.h"
 
 //#include <string>
 #include <iostream>
@@ -74,7 +75,7 @@ MenuPtr InputMenu::execute(std::vector<int>& data) {
 
 MenuPtr OutputMenu::execute(std::vector<int>& data) {
 
-	output::showVector<int>(data, "vec");
+	output::showVector<int>(data, m_title);
 
 	return m_next;
 }

@@ -10,7 +10,7 @@ namespace msg {
 
 	namespace title {
 
-		const size_t size = 26; // title size
+		const size_t size = 30; // title size
 
 		inline Msg centerize(Msg& title) {
 			std::string front{}, end{};
@@ -24,12 +24,29 @@ namespace msg {
 		}
 
 		Msg main{ centerize("Главное меню") };
-		Msg	add{ centerize("Добавление") };
-		Msg show{ centerize("Текст") };
-		Msg save{ centerize("Сохранение") };
-		Msg dialogs{ centerize("Диалоги") };
+		Msg	input{ "Введите массив: " };
+		Msg output{ centerize("Вывод") };
+		//Msg save{ centerize("Сохранение") };
+		//Msg dialogs{ centerize("Диалоги") };
+		Msg sort{ centerize("Сортировка") };
+		Msg random{ centerize("Генерация случайных значений") };
+		Msg input_choice{ centerize("Выбор метода ввода") };
 
 	} // namespace title
+
+	namespace option {
+
+		Msg input{ "Ввести массив" };
+		Msg exit{ "Выйти из программы" };
+		Msg return_to_main{ "Вернуться в главное меню" };
+		Msg manual_input{"Ручной ввод"};
+		Msg generate_random{ "Генерация случайных значений" };
+		Msg from_file{ "Чтение данных из файла" };
+		Msg show{ "Показать массив" };
+		Msg clear{ "Очистить массив" };
+		Msg sort{ "Отсортировать массив" };
+
+	} // namespace option
 
 	namespace input {
 

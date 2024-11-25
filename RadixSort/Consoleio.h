@@ -14,7 +14,7 @@
 namespace input {
 
 	int getInt(msg::Msg& msg = "");
-	//int getInt(int min, msg::Msg& msg = "");
+	int getInt(int min, msg::Msg& msg = "");
 	int getInt(int min, int max, msg::Msg& msg = "");
 
 	std::string getString(msg::Msg& msg = "");
@@ -50,4 +50,6 @@ namespace output {
 	
 } // namespace output
 
-std::istream& operator>>(std::istream& in, std::vector<int>& vec);
+inline namespace io_overloads {
+	std::istream& operator>>(std::istream& in, std::vector<int>& vec);
+} // namespace io_overloads

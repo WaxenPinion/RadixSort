@@ -5,11 +5,12 @@
 
 using namespace std;
 
+// NEGATIVE NUMBERS!
 vector<int> RadixSort(vector<int>& vec) {
 
 	int base = 10;
 	vector<int> result(vec);
-	vector<vector<int>> tmp(base, vector<int>());
+	vector<vector<int>> tmp(base * 2 - 1, vector<int>());
 
 	int max = vec.at(0);
 	for (int el : vec) {
@@ -20,7 +21,8 @@ vector<int> RadixSort(vector<int>& vec) {
 	for (int i = 0; i < max_lenght; ++i) {//sizeof(int) * 8; ++i) { max_length
 
 		for (int& el : result) {
-			int j = (el / static_cast<int>(pow(base, i))) % base; //- lsd, max_lenght - i - 1 instead of i - msd
+			//- lsd, max_lenght - i - 1 instead of i - msd
+			int j = (el / static_cast<int>(pow(base, i))) % base + base - 1;
 			tmp.at(j).push_back(el);
 
 		}

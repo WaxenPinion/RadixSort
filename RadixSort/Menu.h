@@ -12,7 +12,7 @@ public:
 
 	//Menu() = default;
 	Menu(const std::string& title)
-		: m_title{ title } {};
+		: m_title{ title } {}
 	virtual ~Menu() = default;
 
 	virtual Menu* execute(std::vector<int>& data) = 0;
@@ -40,7 +40,7 @@ class OptionMenu : public Menu {
 		Option(const std::string& name_, MenuPtr ptr_, bool(*condition_)(std::vector<int>&))
 			: name{ name_ }
 			, ptr{ ptr_ }
-			, condition{ condition_ } {};
+			, condition{ condition_ } {}
 		std::string name{};
 		MenuPtr ptr{};
 		bool(*condition)(std::vector<int>&) = nullptr;
@@ -50,7 +50,7 @@ public:
 
 	//OptionMenu() = default;
 	OptionMenu(const std::string& title)
-		: Menu(title) {};
+		: Menu(title) {}
 	virtual ~OptionMenu() = default;
 
 	virtual MenuPtr execute(std::vector<int>& data) override;
@@ -84,7 +84,7 @@ public:
 
 	//InputMenu() = default;
 	InputMenu(const std::string& title)
-		: Menu(title) {};
+		: Menu(title) {}
 	virtual ~InputMenu() = default;
 
 	virtual MenuPtr execute(std::vector<int>& data) override;
@@ -104,7 +104,7 @@ public:
 
 	//OutputMenu() = default;
 	OutputMenu(const std::string& title)
-		: Menu(title) {};
+		: Menu(title) {}
 	virtual ~OutputMenu() = default;
 
 	virtual MenuPtr execute(std::vector<int>& data) override;
@@ -116,7 +116,7 @@ class ClearMenu : public Menu {
 public:
 
 	ClearMenu(const std::string& title)
-		: Menu(title) {};
+		: Menu(title) {}
 	virtual ~ClearMenu() = default;
 
 	virtual MenuPtr execute(std::vector<int>& data) override;
@@ -127,8 +127,10 @@ public:
 class ProcessMenu : public Menu {
 public:
 
-	ProcessMenu(const std::string& title)
-		: Menu(title) {};
+	ProcessMenu(const std::string& title,
+		std::vector<int>(*func)(std::vector<int>&) = nullptr)
+		: Menu(title)
+		, m_func{func} {}
 	virtual ~ProcessMenu() = default;
 
 	virtual MenuPtr execute(std::vector<int>& data) override;
@@ -137,7 +139,7 @@ public:
 
 private:
 	
-	std::vector<int>(*m_func)(std::vector<int>&) = nullptr;
+	std::vector<int>(*m_func)(std::vector<int>&);
 
 };
 
@@ -150,15 +152,12 @@ public:
 
 	void start(MenuPtr first);
 
-	//MenuController& addMenu(MenuPtr menu);
-
 private:
 
 	MenuPtr m_next = nullptr;
-	//std::vector<MenuPtr> m_menus{};
-	//bool m_stop = false;
 
-	//placeholder
+	//placeholder, or is it?
 	std::vector<int> m_data{};
+	//Buffer m_buffer{};
 
 };

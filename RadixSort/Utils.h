@@ -25,3 +25,6 @@ private:
 	unsigned int m_prev_in;
 	unsigned int m_prev_out;
 };
+
+
+int generateRandomInt(int min = INT_MIN, int max = INT_MAX);

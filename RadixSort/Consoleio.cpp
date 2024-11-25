@@ -45,7 +45,7 @@ namespace input {
 	}
 
 
-	/*int getInt(int min, msg::Msg& msg) {
+	int getInt(int min, msg::Msg& msg) {
 
 		int output{ getInt(msg) };
 
@@ -55,7 +55,7 @@ namespace input {
 		}
 
 		return output;
-	}*/
+	}
 
 
 	int getInt(int min, int max, msg::Msg& msg) {
@@ -181,21 +181,22 @@ namespace output {
 
 } // namespace output
 
+inline namespace io_overloads {
 
-istream& operator>>(istream& in, vector<int>& vec) {
+	istream& operator>>(istream& in, vector<int>& vec) {
 
-	string s{};
-	getline(in, s, '\n');
-	//input::clearInputStream();
-	stringstream stream{};
-	stream << s;
+		string s{};
+		getline(in, s, '\n');
+		stringstream stream{};
+		stream << s;
 
-	int tmp = 0;
+		int tmp = 0;
+		while (stream >> tmp) {
+			vec.push_back(tmp);
+		}
 
-	while (stream >> tmp) {
-		vec.push_back(tmp);
+		return in;
 	}
-	//if (stream.fail()) cout << "fail" << endl;
 
-	return in;
-}
+} // namespace io_overloads
+
