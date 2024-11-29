@@ -21,7 +21,7 @@ MenuPtr OptionMenu::execute(std::vector<int>& data) {
 			option_names.push_back(m_options.at(i).name);
 		}
 	}
-	output::showOptions(m_title, option_names);
+	output::showOptions(m_title, option_names); // change
 	return m_options.at(active_options.at(input::getOption(active_options.size()))).ptr;
 
 	/*for (size_t i = 0; i < m_ops.size(); ++i) {
@@ -60,8 +60,8 @@ OptionMenu& OptionMenu::addOption(const std::string& name, MenuPtr next,
 MenuPtr InputMenu::execute(std::vector<int>& data) {
 
 	//ShowTitle
-	int a = 0;
-	std::cout << m_title << std::endl;
+	//int a = 0;
+	//std::cout << m_title << std::endl;
 
 	//std::cin >> a;
 
@@ -75,7 +75,7 @@ MenuPtr InputMenu::execute(std::vector<int>& data) {
 
 MenuPtr OutputMenu::execute(std::vector<int>& data) {
 
-	output::showVector<int>(data, m_title);
+	output::showVector<int>(data, "");
 
 	return m_next;
 }
@@ -85,7 +85,9 @@ void MenuController::start(MenuPtr first) {
 
 	m_next = first;
 	while (m_next) {
+		m_next->showTitle();
 		m_next = m_next->execute(m_data);
+		std::cout << std::endl;
 	}
 
 }
@@ -106,6 +108,10 @@ Menu& Menu::setNext(Menu* next) {
 	return *this;
 }
 
+void Menu::showTitle() {
+	std::cout << m_title << std::endl;
+}
+
 
 /*Menu* Menu::end() {
 
@@ -117,12 +123,12 @@ Menu& Menu::setNext(Menu* next) {
 
 MenuPtr ClearMenu::execute(std::vector<int>& data) {
 	data.clear();
-	std::cout << m_title << std::endl;
+	//std::cout << m_title << std::endl;
 	return m_next;
 }
 
 MenuPtr ProcessMenu::execute(std::vector<int>& data) {
-	std::cout << m_title << std::endl;
+	//std::cout << m_title << std::endl;
 	data = m_func(data);
 	return m_next;
 }

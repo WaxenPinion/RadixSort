@@ -12,7 +12,7 @@ namespace msg {
 
 		const size_t size = 30; // title size
 
-		inline Msg centerize(Msg& title) {
+		constexpr Msg centerize(Msg& title) {
 			std::string front{}, end{};
 			size_t n{ size - title.size() };
 			for (size_t i{ 0 }; i < n / 2; ++i) {
@@ -28,7 +28,7 @@ namespace msg {
 		Msg output{ centerize("Вывод") };
 		//Msg save{ centerize("Сохранение") };
 		//Msg dialogs{ centerize("Диалоги") };
-		Msg sort{ centerize("Сортировка") };
+		//Msg sort{ centerize("Сортировка") };
 		Msg random{ centerize("Генерация случайных значений") };
 		Msg input_choice{ centerize("Выбор метода ввода") };
 

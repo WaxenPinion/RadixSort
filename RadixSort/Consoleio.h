@@ -24,7 +24,7 @@ namespace input {
 
 	//std::string getFilePath();
 
-} // namespace input
+}
 
 
 namespace output {
@@ -48,8 +48,9 @@ namespace output {
 	//void showInformation();
 	//void showFileInformation();
 	
-} // namespace output
+}
+
 
 inline namespace io_overloads {
 	std::istream& operator>>(std::istream& in, std::vector<int>& vec);
-} // namespace io_overloads
+}

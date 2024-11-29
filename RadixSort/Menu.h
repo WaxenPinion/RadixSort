@@ -19,6 +19,8 @@ public:
 
 	Menu& setNext(Menu* next);
 
+	void showTitle();
+
 	//static Menu* end();
 
 protected:
@@ -91,8 +93,6 @@ public:
 
 	//InputMenu& setNext(MenuPtr next);
 
-private:
-
 	//int(*m_func)(const std::string&) = nullptr;
 	//MenuPtr m_next;
 
@@ -141,6 +141,17 @@ private:
 	
 	std::vector<int>(*m_func)(std::vector<int>&);
 
+};
+
+
+class FileInputMenu : public Menu {
+public:
+
+	FileInputMenu(const std::string& title)
+		: Menu(title) {}
+	virtual ~FileInputMenu() = default;
+
+	virtual MenuPtr execute(std::vector<int>& data) override;
 };
 
 

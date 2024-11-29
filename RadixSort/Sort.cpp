@@ -6,7 +6,7 @@
 using namespace std;
 
 // NEGATIVE NUMBERS!
-vector<int> RadixSort(vector<int>& vec) {
+vector<int> radixSortInt(vector<int>& vec) {
 
 	int base = 10;
 	vector<int> result(vec);
