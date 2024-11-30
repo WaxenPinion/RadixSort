@@ -1,15 +1,15 @@
-// Console.cpp
-// Контрольная работа № 2.
-// Наследование.
-// Студент группы 4307, Пшеничников Максим Юрьевич. 2024 год
+// Consoleio.cpp
+// РПС
+// Лабораторная работа № 2.
+// Студент группы 434, Пшеничников Максим Юрьевич. 2024 год
 
 #include "Consoleio.h"
 #include "Message.h"
 
 #include <iostream>
-#include <memory>
-#include <string>
 #include <sstream>
+#include <string>
+#include <vector>
 
 using namespace std;
 
@@ -91,29 +91,14 @@ namespace input {
 
 	int getOption(size_t options_count) {
 
-		//output::showOptions(header, options);
-
 		return getInt(1, static_cast<int>(options_count), msg::input::choice) - 1;
 	}
-
-
-	/*string getFilePath() {
-		string output{ getString(msg::input::file_path) };
-		while (output == "?") {
-			output::showFileInformation();
-			output = input::getString(msg::input::file_path);
-		}
-
-		return output;
-	}*/
 
 } // namespace input
 
 namespace output {
 
-	void showOptions(msg::Msg& header, msg::MsgVector& options) {
-
-		cout << header << endl;
+	void showOptions(msg::MsgVector& options) {
 
 		size_t index{ 0 };
 		for (const auto& option : options) {
@@ -122,81 +107,26 @@ namespace output {
 
 	}
 
-
-	void showOptions(msg::Msg& header, msg::MsgVector& options, std::vector<size_t> to_show) {
-
-		cout << header << endl;
-
-		size_t index{ 0 };
-		for (size_t i : to_show) {
-			cout << "  " << ++index << " - " << options.at(i) << endl;
-		}
-
-	}
-
-
-	/*void showAddition(size_t old, size_t _new) {
-		size_t delta{ _new - old };
-		cout << endl << delta << " ";
-		if (delta != 11 and delta % 10 == 1) cout << msg::added_singular;
-		else cout << msg::added_plural;
-		cout << endl;
-	}
-
-
-	void showInformation() {
-		cout << msg::info::greating << endl;
-		cout << msg::info::cw2 << endl << endl;
-		cout << msg::info::task << endl;
-	}
-
-
-	void showFileInformation() {
-		using namespace msg::employee;
-
-		cout << endl << msg::info::file << endl;
-
-		for (size_t i{ 0 }; i < types.size(); ++i) {
-			cout << types[i] << " - " << type_letters[i] << " - " << string_structures[i] << endl;
-		}
-		cout << msg::info::file_end << endl << endl;
-	}
-
-
-	void showPayment(EmployeeVector& employees) {
-
-		cout << endl << msg::title::payment << endl;
-
-		size_t total{ 0 }, index{ 0 };
-		for (const auto& employee : employees) {
-
-			cout << msg::employee::header << ++index << " - ";
-			cout << employee->calculatePayment() << endl;
-			total += employee->calculatePayment();
-
-		}
-
-		cout << msg::total << total << endl;
-	}*/
-
 } // namespace output
 
-inline namespace io_overloads {
 
-	istream& operator>>(istream& in, vector<int>& vec) {
+istream& operator>>(istream& in, vector<int>& vec) {
 
-		string s{};
-		getline(in, s, '\n');
-		stringstream stream{};
-		stream << s;
+	string buf{};
+	getline(in, buf, '\n');
+	stringstream stream{};
+	stream << buf;
 
-		int tmp = 0;
-		while (stream >> tmp) {
-			vec.push_back(tmp);
-		}
-
-		return in;
+	int tmp = 0;
+	while (stream >> tmp) {
+		vec.push_back(tmp);
 	}
 
-} // namespace io_overloads
+	return in;
+}
 
+
+ostream& operator<<(ostream& out, const vector<int>& vec) {
+	output::showVector<int>(out, vec, " ", "", "");
+	return out;
+}

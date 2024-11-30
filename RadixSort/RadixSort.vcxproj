@@ -133,7 +133,6 @@
     <ClCompile Include="Consoleio.cpp" />
     <ClCompile Include="Fileio.cpp" />
     <ClCompile Include="Menu.cpp" />
-    <ClCompile Include="Sort.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>

@@ -1,7 +1,7 @@
 // Consoleio.h
-// Контрольная работа № 2.
-// Наследование.
-// Студент группы 4307, Пшеничников Максим Юрьевич. 2024 год
+// РПС
+// Лабораторная работа № 2.
+// Студент группы 434, Пшеничников Максим Юрьевич. 2024 год
 
 #pragma once
 
@@ -22,35 +22,32 @@ namespace input {
 
 	int getOption(size_t options_count);
 
-	//std::string getFilePath();
-
-}
+} // namespace input
 
 
 namespace output {
 
-	void showOptions(msg::Msg& header, msg::MsgVector& options);
-	void showOptions(msg::Msg& header, msg::MsgVector& options, std::vector<size_t> to_show);
+	void showOptions(msg::MsgVector& options);
 
 	template <typename T>
-	void showVector(std::vector<T>& vec, msg::Msg& header, msg::Msg& sep = ", ",
-		msg::Msg& start = "[ ", msg::Msg& end = " ]") {
+	concept Outputable = requires(T a) {
+		std::cout << a;
+	};
+
+	template <Outputable T>
+	void showVector(std::ostream& out, const std::vector<T>& vec,
+		msg::Msg& sep = ", ", msg::Msg& start = "[ ", msg::Msg& end = " ]") {
 		
-		std::cout << header << std::endl << start;
+		out << start;
 		for (size_t i = 0; i < vec.size() - 1; ++i) {
-			std::cout << vec.at(i) << sep;
+			out << vec.at(i) << sep;
 		}
-		std::cout << vec.back() << end << std::endl;
+		out << vec.back() << end << std::endl;
 
 	}
-
-	//void showAddition(size_t old, size_t _new);
-	//void showInformation();
-	//void showFileInformation();
 	
-}
+} // namespace output
 
 
-inline namespace io_overloads {
-	std::istream& operator>>(std::istream& in, std::vector<int>& vec);
-}
+std::istream& operator>>(std::istream& in, std::vector<int>& vec);
+std::ostream& operator<<(std::ostream& out, const std::vector<int>& vec);

@@ -1,10 +1,16 @@
+// Utils.h
+// РПС
+// Лабораторная работа № 2.
+// Студент группы 434, Пшеничников Максим Юрьевич. 2024 год
+
 #pragma once
 
 #include <Windows.h>
 
 class SetCP {
-
 public:
+
+	static const unsigned int RU = 1251;
 
 	SetCP(int code)
 		: m_prev_in{ GetConsoleCP() }
@@ -24,6 +30,7 @@ private:
 
 	unsigned int m_prev_in;
 	unsigned int m_prev_out;
+
 };
 
 

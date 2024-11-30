@@ -1,3 +1,8 @@
+// Message.h
+// РПС
+// Лабораторная работа № 2.
+// Студент группы 434, Пшеничников Максим Юрьевич. 2024 год
+
 #pragma once
 
 #include <string>
@@ -7,6 +12,17 @@ namespace msg {
 
 	using Msg = const std::string;
 	using MsgVector = const std::vector<std::string>;
+
+	Msg file_already_exists{ "Файл уже существует." };
+	Msg save_completed{ "Сохранение завершено." };
+	Msg reading_completed{ "Чтение файла завершено." };
+	Msg menu_header{ "Выберите пункт меню: " };
+
+	MsgVector rewrite_options{
+		"Перезаписать файл",
+		"Ввести другой путь",
+		"Отменить сохранение"
+	};
 
 	namespace title {
 
@@ -26,11 +42,12 @@ namespace msg {
 		Msg main{ centerize("Главное меню") };
 		Msg	input{ "Введите массив: " };
 		Msg output{ centerize("Вывод") };
-		//Msg save{ centerize("Сохранение") };
-		//Msg dialogs{ centerize("Диалоги") };
-		//Msg sort{ centerize("Сортировка") };
+		Msg cleared{ "Массив очищен." };
+		Msg sorted{ "Массив отсортирован" };
 		Msg random{ centerize("Генерация случайных значений") };
 		Msg input_choice{ centerize("Выбор метода ввода") };
+		Msg file_input{ "Загрузка массива из файла" };
+		Msg file_output{ "Сохранение массива в файл" };
 
 	} // namespace title
 
@@ -45,14 +62,17 @@ namespace msg {
 		Msg show{ "Показать массив" };
 		Msg clear{ "Очистить массив" };
 		Msg sort{ "Отсортировать массив" };
+		Msg save{ "Сохранить массив в файл" };
 
 	} // namespace option
 
 	namespace input {
 
 		Msg choice{ "Ваш выбор: " };
-		//Msg file_path{ "Введите путь к файлу: " };
-		//Msg text{ "Введите текст. Ввод оканчивается $." };
+		Msg file_path{ "Введите путь к файлу: " };
+		Msg random_count{ "Число случайных чисел: " };
+		Msg random_min{ "Минимальное: " };
+		Msg random_max{ "Максимальное: " };
 		//Msg directory{ "Введите путь для сохранения файлов ($ - текущая папка): " };
 
 	} // namespace input
@@ -60,12 +80,12 @@ namespace msg {
 	namespace error {
 
 		Msg wrong_input{ "Некорректные данные." };
-		//Msg no_file{ "Файл не существует." };
+		Msg no_file{ "Файл не существует." };
 		//Msg no_directory{ "Папка не существует." };
-		//Msg file_cant_exist{ "Файл с такой директорией не может существовать." };
-		//Msg cant_write{ "Файл не может быть изменён." };
-		//Msg cant_access{ "Не удалось получить доступ к файлу." };
-		//Msg cant_create{ "Не удалось создать файл." };
+		Msg file_cant_exist{ "Файл с такой директорией не может существовать." };
+		Msg cant_write{ "Файл не может быть изменён." };
+		Msg cant_access{ "Не удалось получить доступ к файлу." };
+		Msg cant_create{ "Не удалось создать файл." };
 
 	} // namespace error
 

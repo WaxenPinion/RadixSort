@@ -1,14 +1,16 @@
 // Fileio.cpp
-// Контрольная работа № 3.
-// Классы потоков ввода-вывода.
-// Студент группы 4307, Пшеничников Максим Юрьевич. 2024 год
+// РПС
+// Лабораторная работа № 2.
+// Студент группы 434, Пшеничников Максим Юрьевич. 2024 год
 
+#include "Consoleio.h"
 #include "Fileio.h"
 #include "Message.h"
 
-#include <string>
-#include <fstream>
 #include <filesystem>
+#include <fstream>
+#include <string>
+#include <vector>
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -34,53 +36,36 @@ namespace fileio {
 	}
 
 
-	void add(string& text, const string& file_path) {
+	void add(std::vector<int>& vec, const string& file_path) {
 
 		switch (checkFileState(file_path))
 		{
 		case doesnt_exist:
-			throw msg::error::wrong_input;//no_file;
+			throw msg::error::no_file;
 		case cant_exist:
-			throw msg::error::wrong_input; //file_cant_exist;
+			throw msg::error::file_cant_exist;
 		default:
 			break;
 		}
 
 		ifstream fin{ file_path };
 
-		if (!fin) throw msg::error::wrong_input; //cant_access;
+		if (!fin) throw msg::error::cant_access;
 
 		string buf{};
 		getline(fin, buf, '\0');
-		(text += '\n') += buf;
+		fin >> vec;
 
 	}
 
 
-	void save(const string& text, const string& file_path) {
+	void save(const std::vector<int>& vec, const string& file_path) {
 
 		ofstream fout{ file_path };
 
-		if (!fout) throw msg::error::wrong_input; //cant_create;
+		if (!fout) throw msg::error::cant_create;
 
-		fout << text;
-
-	}
-
-	void save(const vector<string>& vec, const string& dir_path) {
-
-		size_t index{ 0 };
-		for (const auto& text : vec) {
-
-			string d_path{ (dir_path + "dialog_") + to_string(index + 1) + ".txt" };
-
-			if (checkFileState(d_path) != doesnt_exist)
-				throw msg::error::wrong_input; //file_already_exists;
-
-			save(text, d_path);
-
-			++index;
-		}
+		fout << vec;
 
 	}
 
