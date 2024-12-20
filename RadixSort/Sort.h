@@ -1,14 +1,12 @@
 // Sort.h
-// РПС
-// Лабораторная работа № 2.
-// Студент группы 434, Пшеничников Максим Юрьевич. 2024 год
 
 #pragma once
+
 
 #include <vector>
 
 template <typename T>
-void radixSort(std::vector<T>& vec) {
+void radixSort(std::vector<T>&vec) {
 
 	std::vector<std::vector<T>> bin(2, std::vector<T>());
 
