@@ -5,6 +5,7 @@
 #include "Menu.h"
 #include "Sort.h"
 #include "Utils.h"
+#include "SFML/Network.hpp"
 
 #include <iostream>
 #include <vector>
@@ -122,11 +123,27 @@ void saveToFile(vector<int>& vec) {
 	}
 
 }
-
+//#define TEST_ZONE
 
 int main() {
 
 	SetCP ru{ SetCP::RU };
+
+#ifdef TEST_ZONE
+	sf::Http http{"localhost", 8000};
+
+	sf::Http::Request request{};
+	request.setMethod(sf::Http::Request::Post);
+	//request.setUri("/");
+	request.setField("From", "me");
+	request.setField("Content-Type", "text/plain");
+	request.setBody("param=value");
+
+	sf::Http::Response response = http.sendRequest(request);
+
+	cout << response.getBody() << endl;
+#endif
+
 
 	auto condition = [](vector<int>& vec) { return !vec.empty(); };
 
