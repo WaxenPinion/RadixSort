@@ -32,6 +32,9 @@ public:
 	bool isFocused();
 	void setFocus(bool state);
 
+	float getWidth() const;
+	float getHeight() const;
+
 	//SET_SHAPE(setPosition, const sf::Vector2f&)
 	//SET_SHAPE(setScale, const sf::Vector2f&)
 	
@@ -46,9 +49,6 @@ protected:
 
 	bool checkMouseButton(sf::Event::MouseButtonEvent event_data) const;
 
-	float getWidth() const;
-	float getHeight() const;
-
 private:
 
 	sf::RectangleShape m_shape;
@@ -58,14 +58,22 @@ private:
 };
 
 
-class ItemCollection : public sf::Drawable {
+class UiCollection : public sf::Drawable {
 public:
 
-	ItemCollection() = default;
-	~ItemCollection() = default;
+	UiCollection() = default;
+	~UiCollection() = default;
 
-	ItemCollection& add(const sf::Drawable& drawable);
-	ItemCollection& add(Interactable& drawable);
+	UiCollection& add(const sf::Drawable& drawable);
+	UiCollection& add(Interactable& drawable);
+
+	template <typename T>
+	UiCollection& add(std::vector<T>& vec) {
+		for (auto& element : vec) {
+			add(element);
+		}
+		return *this;
+	}
 
 	void processAll(const sf::Event& event);
 

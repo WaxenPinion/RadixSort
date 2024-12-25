@@ -3,6 +3,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <vector>
 
 class SetCP {
 public:
@@ -32,3 +33,4 @@ private:
 
 
 int generateRandomInt(int min = INT_MIN, int max = INT_MAX);
+std::vector<int> generateRandomVec(int size = 0, int min = INT_MIN, int max = INT_MAX);

@@ -2,10 +2,15 @@
 
 #include <iostream>
 
-Button::Button(const sf::RectangleShape& shape, const sf::Text& text, void(*func)())
+Button::Button(const sf::RectangleShape& shape, const sf::Text& text)
 	: Interactable(shape)
-	, m_text{ text }
-	, m_func{ func } {
+	, m_text{ text } {
+
+	if (m_text.getString().isEmpty()) m_text.setString("0");
+	float factor = getHeight() / m_text.getGlobalBounds().height / 2;
+	m_text.scale(factor, factor);
+	m_text.setString(text.getString());
+
 	centerizeText();
 }
 
@@ -29,8 +34,22 @@ void Button::process(const sf::Event& event) {
 
 	}*/
 	if (event.type == sf::Event::MouseButtonPressed and checkMouseButton(event.mouseButton)
-			and isHovered(event.mouseButton) and m_func)
+		and isHovered(event.mouseButton)) {
+		setFocus(true);
 		m_func();
+	}
+	else setFocus(false);
+}
+
+Button& Button::setLabel(const sf::String& label){
+	m_text.setString(label);
+	centerizeText();
+	return *this;
+}
+
+Button& Button::setFunction(const Func& func) {
+	m_func = func;
+	return *this;
 }
 
 
@@ -48,8 +67,10 @@ void Button::centerizeText() {
 	
 	sf::Vector2f pos{};
 
-	pos.x = (getWidth() - m_text.getLocalBounds().width) / 2;
-	pos.y = (getHeight() - m_text.getLocalBounds().height) / 2 - 10; // why 10? Just because
+	pos.x = (getWidth() - m_text.getLocalBounds().width*m_text.getScale().x) / 2;
+	//std::cout << getWidth() << std::endl;
+	//std::cout << m_text.getLocalBounds().width * m_text.getScale().x << std::endl;
+	//pos.y = (getHeight() - m_text.getLocalBounds().height) / 2 - 10; // why 10? Just because
 	
 	m_text.setPosition(pos);
 

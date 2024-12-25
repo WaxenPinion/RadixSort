@@ -21,6 +21,7 @@ bool Interactable::isFocused() {
 }
 
 void Interactable::setFocus(bool state) {
+	m_shape.setOutlineThickness(static_cast<float>(state));
 	m_focused = state;
 }
 
@@ -56,24 +57,24 @@ void Interactable::setMode(Mode mode) {
 	m_mode = mode;
 }
 
-ItemCollection& ItemCollection::add(const sf::Drawable& drawable) {
+UiCollection& UiCollection::add(const sf::Drawable& drawable) {
 	m_drawables.push_back(&drawable);
 	return *this;
 }
 
-ItemCollection& ItemCollection::add(Interactable& interactable) {
+UiCollection& UiCollection::add(Interactable& interactable) {
 	m_drawables.push_back(&interactable);
 	m_interactables.push_back(&interactable);
 	return *this;
 }
 
-void ItemCollection::processAll(const sf::Event& event) {
+void UiCollection::processAll(const sf::Event& event) {
 	for (Interactable* element : m_interactables) {
 		element->process(event);
 	}
 }
 
-void ItemCollection::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void UiCollection::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	for (const sf::Drawable* element : m_drawables) {
 		target.draw(*element, states);
 	}

@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{42527349-dada-4948-b7f6-4aa393522773}</ProjectGuid>
-    <RootNamespace>WebRSort</RootNamespace>
+    <ProjectGuid>{82c8bc42-0f59-42e2-af41-e3de9a5d9f2d}</ProjectGuid>
+    <RootNamespace>ConsoleTests</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ExternalIncludePath>\SFML-2.6.1\include$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>..\SFML-2.6.1\include; ..\WebRSort;..\RadixSort;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -107,7 +107,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\SFML-2.6.1\include;..\RadixSort</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\SFML-2.6.1\include; ..\WebRSort;..\RadixSort</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -125,34 +125,28 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\SFML-2.6.1\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\SFML-2.6.1\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\RadixSort\Consoleio.cpp" />
-    <ClCompile Include="Button.cpp" />
-    <ClCompile Include="ButtonLogic.cpp" />
-    <ClCompile Include="Entry.cpp" />
-    <ClCompile Include="Interactable.cpp" />
-    <ClCompile Include="Source.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Button.hpp" />
-    <ClInclude Include="ButtonLogic.hpp" />
-    <ClInclude Include="Entry.hpp" />
-    <ClInclude Include="Interactable.hpp" />
+    <ClCompile Include="..\RadixSort\Utils.cpp" />
+    <ClCompile Include="..\WebRSort\ButtonLogic.cpp" />
+    <ClCompile Include="..\WebRSort\Entry.cpp" />
+    <ClCompile Include="..\WebRSort\Interactable.cpp" />
+    <ClCompile Include="ConsoleTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RadixSort\RadixSort.vcxproj">
       <Project>{bb54fbf1-b581-4470-b099-d3ab3b876a1b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\WebRSort\WebRSort.vcxproj">
+      <Project>{42527349-dada-4948-b7f6-4aa393522773}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

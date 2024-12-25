@@ -39,7 +39,7 @@ namespace output {
 		for (size_t i = 0; i < vec.size() - 1; ++i) {
 			out << vec.at(i) << sep;
 		}
-		out << vec.back() << end << std::endl;
+		out << vec.back() << end;
 
 	}
 	

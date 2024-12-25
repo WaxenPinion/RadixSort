@@ -118,6 +118,7 @@ istream& operator>>(istream& in, vector<int>& vec) {
 	while (stream >> tmp) {
 		vec.push_back(tmp);
 	}
+	in.clear();
 
 	return in;
 }
