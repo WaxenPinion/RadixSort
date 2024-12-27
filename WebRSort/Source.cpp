@@ -12,159 +12,213 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <map>
 
 using namespace std;
 
 
 int main() {
 
-	const sf::Vector2i window_size{ 1000, 600 };
-	const int margin = 50, text_height = 30, array_limit = 60, interval = 5;
-	sf::Color light_grey{ 150, 150, 150 };
-
 	sf::Font font{};
 	if (!font.loadFromFile("assets/Roboto-Black.ttf")) return EXIT_FAILURE;
-	sf::RenderWindow window{ sf::VideoMode(window_size.x, window_size.y), 
-		L"Поразрядная сортировка" };
-	UiCollection collection{};
+
+	map<string, sf::Texture> textures{
+		{"add", sf::Texture()},
+		{"delete", sf::Texture()},
+		{"export", sf::Texture()},
+		{"import", sf::Texture()},
+		{"sort", sf::Texture()},
+		{"left", sf::Texture()},
+		{"import_all", sf::Texture()},
+		{"right", sf::Texture()}
+	};
+	for (auto& [key, value] : textures) {
+		if (!value.loadFromFile("assets/icons/" + key + ".png")) return EXIT_FAILURE;
+	}
+
+	const sf::Vector2f window_size{ 1000, 600 };//pos of msg
+	const float margin = 50,
+		entry_height = 30,
+		interval = 5,
+		help_width = 350,
+
+		entry_index_width = entry_height * 2 + interval,
+		entry_array_width = window_size.x - 2 * margin - entry_index_width - 2 * interval
+		- help_width,
+		entry_index_pos_x = margin,
+		entry_array_pos_x = margin + entry_index_width + interval,
+		entry_cur_pos_y = margin,
+		entry_db_pos_y = window_size.y / 3,
+		offset_y = entry_height,
+		msg_pos_y = entry_db_pos_y - 2.5F * offset_y,
+		db_bts_pos_x = window_size.x / 2 - 1.5F * entry_height - interval,
+		help_pos_x = entry_array_pos_x + entry_array_width + interval;
+	 
+
+	size_t array_limit = 60, index_limit = 5;
+	sf::Color light_grey{ 150, 150, 150 };
+
+	sf::RenderWindow window{
+		sf::VideoMode(static_cast<int>(window_size.x), static_cast<int>(window_size.y)),
+		L"Поразрядная сортировка"
+	};
 	sf::Http http{ "localhost", 8000 };
 
-	sf::RectangleShape background{ sf::Vector2f(window_size)};
+	UiCollection collection{};
+	
+	sf::RectangleShape background{ window_size };
 	background.setFillColor(sf::Color(100, 100, 100));
-	//sf::Texture texture{};
-	//if (!texture.loadFromFile("assets/doS.png")) return EXIT_FAILURE;
-	//background.setTexture(&texture);
 	collection.add(background);
-	 
-	sf::Text default_text{ "", font };
+
+	sf::Text default_text{ "0", font };
+	float text_scale = default_text.getLocalBounds().getSize().y / entry_height;
+	default_text.scale({ text_scale, text_scale });
+	default_text.setString("");
 	default_text.setFillColor(sf::Color::Black);
 
-	sf::RectangleShape entry_bg{ sf::Vector2f(window_size.x - 4 * margin, text_height) };
-	entry_bg.setOutlineColor(sf::Color::Black);
+	//map<string, sf::Text> help_text{};
+	map<string, sf::Text> help_text{
+		{"add", sf::Text(L"- Добавление массива в БД", font)},
+		{"delete", sf::Text(L"- Удаление массива из БД", font)},
+		{"export", sf::Text(L"- Изменение массив в БД", font)},
+		{"import", sf::Text(L"- Извлечение массива из БД", font)},
+		{"sort", sf::Text(L"- Сортировка массива", font)},
+		{"left", sf::Text(L"- Перейти на прошлую страницу", font)},
+		{"import_all", sf::Text(L"- Показать все массивы в БД", font)},
+		{"right", sf::Text(L"- Перейти на следующую страницу", font)},
+	};
+	map<string, sf::RectangleShape> help_image{};
+	int i = 0;
+	for (auto& [key, value] : help_text) {
+		float pos_y = margin + i++ * (interval + entry_height);
 
-	Entry array_entry{entry_bg, default_text};
-	array_entry.changeShape().setPosition(margin+text_height, margin);
+		help_image[key] = sf::RectangleShape({ entry_height, entry_height });
+		help_image.at(key).setTexture(&textures.at(key));
+		help_image.at(key).setPosition(help_pos_x, pos_y);
+		collection.add(help_image.at(key));
+
+		help_text.at(key).setPosition(help_pos_x + entry_height + interval, pos_y);
+		help_text.at(key).scale({ text_scale, text_scale });
+		help_text.at(key).setFillColor(sf::Color::Black);
+		collection.add(help_text.at(key));
+
+	}
+
+
+	Entry array_entry{
+		sf::RectangleShape({ entry_array_width, entry_height }),
+		default_text
+	},
+	index_entry{
+		sf::RectangleShape({entry_index_width, entry_height }),
+		default_text
+	};
+	array_entry.changeShape().setOutlineColor(sf::Color::Black);
+	index_entry.changeShape().setOutlineColor(sf::Color::Black);
+
+	array_entry.changeShape().setPosition(entry_array_pos_x, entry_cur_pos_y);
 	array_entry.setWhiteList("0123456789 ");
 	array_entry.setLimit(array_limit);
 	collection.add(array_entry);
 
-	const sf::Vector2f scale = array_entry.getText().getScale();
-	default_text.scale(scale);
-
-	Entry index_entry{ array_entry };
-	index_entry.changeShape().setSize(sf::Vector2f(margin + 2 * interval, text_height));
-	index_entry.changeShape().move(sf::Vector2f(- index_entry.getWidth() - interval, 0));
+	index_entry.changeShape().setPosition(entry_index_pos_x, entry_cur_pos_y);
 	index_entry.setWhiteList("0123456789");
-	index_entry.setLimit(5);
+	index_entry.setLimit(index_limit);
 	collection.add(index_entry);
 
 	vector<sf::Text> labels{};
 	{
-		sf::Text arr{ default_text }, db{ default_text }, number{ default_text },
-			index{ default_text };
+		sf::Text label_cur_array{ default_text }, label_db_arrays{ default_text },
+			label_cur_index{ default_text }, label_db_index{ default_text },
+			label_msg{ default_text };
 
-		arr.setString(L"Массив:");
-		arr.setPosition(margin + text_height, text_height - interval);
-		labels.push_back(arr);
+		label_cur_array.setString(L"Массив:");
+		label_cur_array.setPosition(entry_array_pos_x, entry_cur_pos_y - offset_y);
+		labels.push_back(label_cur_array);
 
-		db.setString(L"Содержимое базы данных:");
-		db.setPosition(margin + text_height, window_size.y / 3 - text_height);
-		labels.push_back(db);
+		label_db_arrays.setString(L"Содержимое базы данных:");
+		label_db_arrays.setPosition(entry_array_pos_x, entry_db_pos_y - offset_y);
+		labels.push_back(label_db_arrays);
 
-		number.setString(L"#");
-		number.setPosition(margin / 2, window_size.y / 3 - text_height);
-		labels.push_back(number);
+		label_cur_index.setString(L"#");
+		label_cur_index.setPosition(entry_index_pos_x, entry_cur_pos_y - offset_y);
+		labels.push_back(label_cur_index);
 
-		index.setString(L"#");
-		index.setPosition(index_entry.getShape().getPosition());
-		index.move(sf::Vector2f(index_entry.getWidth() / 2, -text_height + interval));
-		labels.push_back(index);
+		label_db_index = label_cur_index;
+		label_db_index.setPosition(entry_index_pos_x, entry_db_pos_y - offset_y);
+		labels.push_back(label_db_index);
+
+		label_msg.setString(L"Статус:");
+		label_msg.setPosition(entry_index_pos_x, msg_pos_y);
+		labels.push_back(label_msg);
 	}
 	collection.add(labels);
-	
+
 	sf::Text msg_text{ default_text };
-	msg_text.setPosition(window_size.x / 2, 0);
-	msg_text.setString("");
+	msg_text.setPosition(entry_array_pos_x + 2 * interval, msg_pos_y);
+	msg_text.setString(L"Ожидание команд");
 	collection.add(msg_text);
-	
-	vector<Entry> arrays_in_db{};
-	vector<sf::Text> db_ids{};
+
+	vector<Entry> vec_db_arrays{}, vec_db_ids{};
 	for (int i = 0; i < 10; ++i) {
-		float pos_y = static_cast<float>(window_size.y / 3 + (text_height + interval) * (i + 1));
+		float pos_y = entry_db_pos_y + i * (interval + entry_height);
 
-		arrays_in_db.push_back(Entry(entry_bg, default_text, false));
-		arrays_in_db.back().changeShape().setPosition(margin+text_height, pos_y);
+		vec_db_arrays.push_back(array_entry);
+		vec_db_arrays.back().changeShape().setPosition(entry_array_pos_x, pos_y);
+		vec_db_arrays.back().setActive(false);
 
-		db_ids.push_back(default_text);
-		db_ids.back().setPosition(margin/2, pos_y);
-		db_ids.back().setString(to_string(i+1));
+		vec_db_ids.push_back(index_entry);
+		vec_db_ids.back().changeShape().setPosition(entry_index_pos_x, pos_y);
+		vec_db_ids.back().setActive(false);
 	}
-	collection.add(arrays_in_db);
-	collection.add(db_ids);
+	collection.add(vec_db_arrays);
+	collection.add(vec_db_ids);
 
 	Button bt_template{
-		sf::RectangleShape(sf::Vector2f(6 * text_height, text_height)),
-		default_text
+		sf::RectangleShape({ entry_height, entry_height })
 	};
-	bt_template.changeShape().setFillColor(light_grey);
-	bt_template.changeShape().setOutlineColor(sf::Color::Black);
+	sf::RectangleShape button_shape{ { entry_height, entry_height } };
+	button_shape.setFillColor(light_grey);
+	button_shape.setOutlineColor(sf::Color::Black);
 
-	Button sort_bt{ bt_template };
-	sort_bt.changeShape().setPosition(margin*2, margin+text_height+interval);
-	sort_bt.setLabel(L"Отсортировать")
-		.setFunction(Button::Func(bind(sortArray, ref(array_entry), ref(msg_text))));
-	collection.add(sort_bt);
-	
-	Button add_bt{ bt_template };
-	add_bt.changeShape().setPosition(margin * 6, margin + text_height + interval);
-	add_bt.setLabel(L"Добавить запись")
-		.setFunction(Button::Func(bind(addArray, ref(array_entry), ref(http), ref(msg_text))));
-	collection.add(add_bt);
-
-	Button change_bt{ bt_template };
-	change_bt.changeShape().setPosition(
-		window_size.x / 2 + interval, margin + text_height + interval);
-	change_bt.setLabel(L"Изменить запись #")
-		.setFunction(Button::Func(bind(changeArray, 
-			ref(array_entry), ref(index_entry), ref(http), ref(msg_text))
-		));
-	collection.add(change_bt);
-
-	Button get_bt{ bt_template };
-	get_bt.changeShape().setPosition(change_bt.getShape().getPosition());
-	get_bt.changeShape().move(sf::Vector2f(change_bt.getWidth() + interval, 0));
-	get_bt.setLabel(L"Извлечь запись #")
-		.setFunction(Button::Func(bind(getArray,
-			ref(array_entry), ref(index_entry), ref(http), ref(msg_text))
-		));
-	collection.add(get_bt);
+	map<string, Button> buttons{};
+	i = 0;
+	for (auto& [key, value] : textures) {
+		buttons[key] = Button(button_shape, value);
+		buttons.at(key).changeShape().setPosition(
+			entry_array_pos_x + i++ * (entry_height + interval),
+			entry_cur_pos_y + offset_y + interval
+		);
+		collection.add(buttons.at(key));
+	}
 
 	int current_page = 0;
 	vector<sf::String> db_content{};
-	bt_template.changeShape().setSize(sf::Vector2f(8 * text_height, text_height));
-	Button prev_page_bt{ bt_template }, next_page_bt{ bt_template }, get_all{ bt_template };
+	buttons.at("add").setFunction(bind(addArray, ref(array_entry), ref(http), ref(msg_text)));
+	buttons.at("delete").setFunction(bind(deleteArray,
+		ref(index_entry), ref(http), ref(msg_text)));
+	buttons.at("export").setFunction(bind(changeArray,
+		ref(array_entry), ref(index_entry), ref(http), ref(msg_text)));
+	buttons.at("import").setFunction(bind(getArray,
+		ref(array_entry), ref(index_entry), ref(http), ref(msg_text)));
+	buttons.at("sort").setFunction(bind(sortArray, ref(array_entry), ref(msg_text)));
+	buttons.at("left").setFunction(bind(changePage,
+		ref(vec_db_arrays), ref(db_content), ref(vec_db_ids),
+		ref(current_page), -1, ref(msg_text)));
+	buttons.at("import_all").setFunction(bind(getAllArrays,
+		ref(vec_db_arrays), ref(db_content), ref(vec_db_ids),
+		ref(current_page), ref(http), ref(msg_text)));
+	buttons.at("right").setFunction(bind(changePage,
+		ref(vec_db_arrays), ref(db_content), ref(vec_db_ids),
+		ref(current_page), 1, ref(msg_text)));
 
-	prev_page_bt.changeShape().setPosition(margin + text_height, window_size.y / 3);
-	prev_page_bt.setLabel(L"Предыдущая страница")
-		.setFunction(Button::Func(bind(changePage,
-			ref(arrays_in_db), ref(db_content), ref(current_page), -1, ref(msg_text))
-		));
-	collection.add(prev_page_bt);
-
-	next_page_bt.changeShape().setPosition( margin + 9 * text_height + interval, window_size.y / 3);
-	next_page_bt.setLabel(L"Следующая страница")
-		.setFunction(Button::Func(bind(changePage,
-			ref(arrays_in_db), ref(db_content), ref(current_page), 1, ref(msg_text))
-		));
-	collection.add(next_page_bt);
-
-	get_all.changeShape().setPosition(margin + 17 * text_height + interval, window_size.y / 3);
-	get_all.setLabel(L"Извлечь всё из БД")
-		.setFunction(Button::Func(bind(getAllArrays,
-			ref(arrays_in_db), ref(db_content), ref(current_page), ref(http), ref(msg_text))
-		));
-	collection.add(get_all);
-	//prev_page_bt.changeShape().move(sf::Vector2f(change_bt.getWidth() + interval, 0));
+	vector<string> db_bts{ "left", "import_all", "right" };
+	for (int i = 0; i < db_bts.size(); ++i) {
+		buttons.at(db_bts.at(i)).changeShape().setPosition(
+			db_bts_pos_x + i * (entry_height + interval),
+			entry_db_pos_y - offset_y - interval
+		);
+	}
 
 	while (window.isOpen()) {
 
@@ -189,28 +243,8 @@ int main() {
 
 		window.draw(collection);
 
-		//window.draw(text);
-		/*if (view.getCenter().x < 100) to_left = false;
-		else if (view.getCenter().x > 1000) to_left = true;
-		if (to_left) view.move(-1, 0);
-		else view.move(1, 0);
-		window.setView(view);*/
-
 		window.display();
 	}
-	
-	/*sf::Http http{"localhost", 8000};
-
-	sf::Http::Request request{};
-	request.setMethod(sf::Http::Request::Post);
-	//request.setUri("/");
-	request.setField("From", "me");
-	request.setField("Content-Type", "text/plain");
-	request.setBody("param=value");
-
-	sf::Http::Response response = http.sendRequest(request);
-
-	cout << response.getBody() << endl;*/
 
 	return EXIT_SUCCESS;
 }

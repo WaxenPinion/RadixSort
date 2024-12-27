@@ -11,7 +11,7 @@ int generateRandomInt(int min, int max) {
 	static std::random_device rd{};
 	static std::default_random_engine drf{ rd()};
 	
-	if (max - min + 1 == 0) return drf();
+	if (max - min + 1 == 0 or max < min) return drf();
 	return drf() % (max - min + 1) + min;
 }
 

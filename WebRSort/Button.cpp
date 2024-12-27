@@ -2,9 +2,15 @@
 
 #include <iostream>
 
+Button::Button()
+	: Interactable(sf::RectangleShape())
+	, m_text{ sf::Text() }
+	, m_texture{ sf::RectangleShape() } {}
+
 Button::Button(const sf::RectangleShape& shape, const sf::Text& text)
 	: Interactable(shape)
-	, m_text{ text } {
+	, m_text{ text }
+	, m_texture{ sf::RectangleShape() } {
 
 	if (m_text.getString().isEmpty()) m_text.setString("0");
 	float factor = getHeight() / m_text.getGlobalBounds().height / 2;
@@ -14,25 +20,16 @@ Button::Button(const sf::RectangleShape& shape, const sf::Text& text)
 	centerizeText();
 }
 
+Button::Button(const sf::RectangleShape& shape, const sf::Texture& texture)
+	: Interactable(shape)
+	, m_texture{ shape }
+	, m_text{ sf::Text() } {
+	m_texture.setTexture(&texture);
+}
+
 
 void Button::process(const sf::Event& event) {
-	/*if (event.type == sf::Event::MouseButtonPressed) {
-		switch (mode_)
-		{
-		case Button::Left:
-			if (!event.mouseButton.button and checkMousePos(event.mouseButton)) func_();
-			break;
-		case Button::Right:
-			if (event.mouseButton.button and checkMousePos(event.mouseButton)) func_();
-			break;
-		case Button::Both:
-			if (checkMousePos(event.mouseButton)) func_();
-			break;
-		default:
-			break;
-		}
-
-	}*/
+	
 	if (event.type == sf::Event::MouseButtonPressed and checkMouseButton(event.mouseButton)
 		and isHovered(event.mouseButton)) {
 		setFocus(true);
@@ -52,6 +49,12 @@ Button& Button::setFunction(const Func& func) {
 	return *this;
 }
 
+Button& Button::setTexture(const sf::Texture& texture) {
+	m_texture.setTexture(&texture);
+	m_texture.setSize(getShape().getSize());
+	return *this;
+}
+
 
 void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
@@ -59,6 +62,7 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 	states.transform.combine(getShape().getTransform());
 	target.draw(m_text, states);
+	target.draw(m_texture, states);
 
 }
 
@@ -66,16 +70,6 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 void Button::centerizeText() {
 	
 	sf::Vector2f pos{};
-
 	pos.x = (getWidth() - m_text.getLocalBounds().width*m_text.getScale().x) / 2;
-	//std::cout << getWidth() << std::endl;
-	//std::cout << m_text.getLocalBounds().width * m_text.getScale().x << std::endl;
-	//pos.y = (getHeight() - m_text.getLocalBounds().height) / 2 - 10; // why 10? Just because
-	
 	m_text.setPosition(pos);
-
-	//std::cout << getWidth() << " " << getHeight() << std::endl;
-	//std::cout << text_.getLocalBounds().width << " " << text_.getLocalBounds().height << std::endl;
-	//std::cout << pos.x << " " << pos.y << std::endl;
-
 }

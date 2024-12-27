@@ -81,6 +81,11 @@ Entry& Entry::setLimit(size_t limit) {
 	return *this;
 }
 
+Entry& Entry::setActive(bool active) {
+	m_active = active;
+	return *this;
+}
+
 
 void Entry::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 

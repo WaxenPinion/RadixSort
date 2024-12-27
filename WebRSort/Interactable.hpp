@@ -5,6 +5,7 @@
 //#define SET_SHAPE(setter, arg_type) void setter(arg_type arg) { m_shape.setter(arg); }
 //#define GET_SHAPE(getter, ret_type) ret_type getter() const { return shape_.getter(); }
 #include <vector>
+#include <map>
 
 class Interactable : public sf::Drawable {
 public:
@@ -71,6 +72,14 @@ public:
 	UiCollection& add(std::vector<T>& vec) {
 		for (auto& element : vec) {
 			add(element);
+		}
+		return *this;
+	}
+
+	template <typename T>
+	UiCollection& add(std::map<std::string, T> m) {
+		for (auto& [_key, value] : m) {
+			add(value);
 		}
 		return *this;
 	}

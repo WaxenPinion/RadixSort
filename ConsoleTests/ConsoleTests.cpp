@@ -1,9 +1,9 @@
-﻿
-
+﻿//ConsoleTests.cpp
 
 #include "ButtonLogic.hpp"
 #include "Consoleio.h"
 #include "Utils.h"
+#include "Sort.h"
 
 #include <iostream>
 #include <vector>
@@ -47,15 +47,48 @@ bool testDelete(int count) {
 }
 
 
-int measureExecutionTime(int count, bool(*func)(int)) {
+bool testSort(int count) {
+
+	sf::Http http{ "localhost", 8000 };
+	sf::Http::Response response = sendGetRequest(http, "/?all");
+	if (response.getStatus() != sf::Http::Response::Ok) return false;
+	
+	vector<sf::String> arrays{ splitAllArrays(response.getBody()) };
+
+	size_t part_size = arrays.size() / count;
+
+	if (part_size < 1) return false;
+
+	for (size_t i = 0; i < count; ++i) {
+
+		size_t j = 0;
+		if (part_size > 1) j = generateRandomInt(0, part_size - 1);
+
+		sf::String tmp{ sortStringArray(arrays.at(i * part_size + j)) };
+		//cout << string(tmp);
+
+	}
+
+	return true;
+}
+
+
+bool testFunction(int count, bool(*func)(int)) {
 	auto start = std::chrono::high_resolution_clock::now();
-	bool res = func(count);
-	if (!res) throw res;
+	bool result = func(count);
 	auto end = std::chrono::high_resolution_clock::now();
 
-	auto int_s = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+	if (!result) {
+		cout << "Тест не пройден" << endl;
+		return result;
+	}
 
-	return int_s.count();
+	auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+
+	cout << "Тест пройден" << endl;
+	cout << "Время выполнения: " << duration.count() << " секунд" << endl;
+
+	return result;
 }
 
 
@@ -63,58 +96,15 @@ int main() {
 
 	SetCP ru{ SetCP::RU };
 
-	cout << "Тест добавление 100" << endl;
-	try {
-		cout << "Время выполнения: " << measureExecutionTime(100, testAdd)
-			<< " милисекунд" << endl;
-	}
-	catch (bool) {
-		cout << "Тест не пройден" << endl;
-	}
-
-	cout << "Тест удаление 100" << endl;
-	try {
-		cout << "Время выполнения: " << measureExecutionTime(100, testDelete) 
-			<< " милисекунд" << endl;
-	}
-	catch (bool) {
-		cout << "Тест не пройден" << endl;
+	vector<int> test_counts{ 100, 1000, 10000 };
+	for (int count : test_counts) {
+		cout << "Тест добавление " << count << endl;
+		if(!testFunction(count, testAdd)) break;
+		cout << "Тест сортировка " << count << endl;
+		testFunction(100, testSort);
+		cout << "Тест удаление " << count << endl;
+		testFunction(count, testDelete);
 	}
 
-	cout << "Тест добавление 1000" << endl;
-	try {
-		cout << "Время выполнения: " << measureExecutionTime(1000, testAdd)
-			<< " милисекунд" << endl;
-	}
-	catch (bool) {
-		cout << "Тест не пройден" << endl;
-	}
-
-	cout << "Тест удаление 100" << endl;
-	try {
-		cout << "Время выполнения: " << measureExecutionTime(1000, testDelete)
-			<< " милисекунд" << endl;
-	}
-	catch (bool) {
-		cout << "Тест не пройден" << endl;
-	}
-
-	cout << "Тест добавление 10000" << endl;
-	try {
-		cout << "Время выполнения: " << measureExecutionTime(10000, testAdd)
-			<< " милисекунд" << endl;
-	}
-	catch (bool) {
-		cout << "Тест не пройден" << endl;
-	}
-
-	cout << "Тест удаление 10000" << endl;
-	try {
-		cout << "Время выполнения: " << measureExecutionTime(10000, testDelete)
-			<< " милисекунд" << endl;
-	}
-	catch (bool) {
-		cout << "Тест не пройден" << endl;
-	}
-
+	return EXIT_SUCCESS;
 }

@@ -9,14 +9,16 @@ class Button : public Interactable {
 public:
 	using Func = std::function<void()>;
 
-	Button(const sf::RectangleShape& shape,
-		const sf::Text& text = sf::Text());
+	Button();
+	Button(const sf::RectangleShape& shape, const sf::Text& text = sf::Text());
+	Button(const sf::RectangleShape& shape, const sf::Texture& texture);
 	virtual ~Button() = default;
 
 	virtual void process(const sf::Event& event) override;
 
 	Button& setLabel(const sf::String& label);
 	Button& setFunction(const Func& func);
+	Button& setTexture(const sf::Texture& texture);
 
 protected:
 
@@ -28,6 +30,7 @@ private:
 
 	sf::Text m_text;
 	Func m_func{};
+	sf::RectangleShape m_texture;
 
 };
 

@@ -21,6 +21,7 @@ public:
 	const sf::String& getString() const;
 
 	Entry& setLimit(size_t limit);
+	Entry& setActive(bool active);
 
 protected:
 
